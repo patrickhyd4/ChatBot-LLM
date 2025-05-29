@@ -1,127 +1,129 @@
-# ChatBot-LLM
-in short, we are trying to make a chatbot that uses a privately hosted LLM with a RAG pipepline. The source of the RAG should be documents in a reference folder
-Local RAG Chatbot
-Project Overview
-This project implements a Retrieval Augmented Generation (RAG) chatbot that allows you to interact with your private documents using a locally hosted Large Language Model (LLM) and embedding model. The core idea is to enhance the LLM's responses by providing relevant context extracted from your own document collection. This enables the chatbot to answer questions specific to your uploaded files, making it feel like you're "chatting with your documents."
+Local RAG Chatbot: Chat with Your Documents 📚💬
+✨ Project Overview
+Unlock the power of your private documents with this intuitive Retrieval Augmented Generation (RAG) chatbot. This project provides a seamless way to interact with your personal knowledge base by combining a locally hosted Large Language Model (LLM) with cutting-edge embedding and retrieval techniques. Say goodbye to endless searching – simply ask your questions, and let the RAG chatbot provide insightful answers directly from your uploaded files. It's like having a dedicated assistant for your documents!
 
-Features
-Document Ingestion: Supports PDF, DOCX, and TXT file formats for document ingestion. 
-Text Chunking: Documents are automatically split into smaller chunks (approximately 300 tokens) to optimize for embedding and retrieval. 
-Local Embeddings: Utilizes Ollama's nomic-embed-text model for generating embeddings locally. 
-Supabase Integration: Stores document chunks and their embeddings in a Supabase database for efficient retrieval. 
-Local LLM Integration: Leverages a locally hosted LLM (specifically gemma3:latest through Ollama) for generating responses. 
-Cosine Similarity Search: Retrieves the most relevant document chunks based on cosine similarity to the user's query. 
-Contextual Question Answering: The LLM receives the relevant document chunks as context to provide accurate and informed answers. 
-Command-Line Interface (CLI): Simple CLI for interacting with the chatbot. 
-Technologies Used
-Python: Primary programming language.
-Supabase: Backend for storing document chunks and embeddings.
-Ollama: For locally running the embedding model (nomic-embed-text) and the LLM (gemma3:latest).
-pypdf: For extracting text from PDF documents. 
-python-docx: For extracting text from DOCX documents. 
-tiktoken: For tokenizing text and managing chunk sizes. 
-numpy: For numerical operations, specifically cosine similarity calculation. 
-python-dotenv: For managing environment variables. 
-requests: For making HTTP requests to the Ollama API. 
-Setup and Installation
+🌟 Features at a Glance
+Versatile Document Ingestion: Effortlessly process your knowledge base from various formats, including PDF, DOCX, and TXT files.
+Intelligent Text Chunking: Documents are automatically segmented into optimized chunks (approximately 380 tokens)  to ensure efficient embedding and precise retrieval, striking a balance between context and conciseness.
+On-Premise Embeddings: Harness the power of Ollama's nomic-embed-text model  for local, privacy-preserving generation of text embeddings.
+Robust Supabase Integration: Securely store your document chunks and their high-dimensional embeddings in a Supabase database, enabling rapid and scalable information retrieval.
+Locally Hosted LLM: Power your conversations with a locally running Large Language Model, specifically leveraging the gemma3:latest model via Ollama  for responsive and intelligent interactions.
+Semantic Search with Cosine Similarity: Employ advanced cosine similarity algorithms to accurately identify and retrieve the most semantically relevant document chunks based on your queries.
+Context-Aware Responses: The LLM intelligently synthesizes information by receiving the most pertinent document chunks as context, ensuring answers are grounded, accurate, and highly relevant to your specific data.
+User-Friendly CLI: Interact with your RAG chatbot through a straightforward and engaging command-line interface.
+🛠️ Technologies Under the Hood
+This project is built upon a robust stack of modern technologies:
+
+Python: The core programming language orchestrating the entire RAG pipeline.
+Supabase: Serves as the scalable backend for efficient storage and management of document content and their vector embeddings.
+Ollama: Facilitates the seamless local execution of both the embedding model (nomic-embed-text) and the powerful LLM (gemma3:latest).
+pypdf: Empowers the extraction of textual content from PDF documents.
+python-docx: Enables robust text extraction from DOCX file formats.
+tiktoken: Crucial for precise text tokenization and intelligent chunk sizing, ensuring optimal input for embedding models.
+numpy: Provides essential numerical computing capabilities, particularly for the cosine similarity calculations.
+python-dotenv: Securely manages environment variables for sensitive credentials.
+requests: Handles the HTTP communication with the local Ollama API.
+🚀 Getting Started
+Follow these steps to set up and run your local RAG chatbot.
+
 Prerequisites
-Before you begin, ensure you have the following installed:
+Before diving in, make sure you have these essential tools ready:
 
-Python 3.8+
-Ollama: Download and install Ollama from ollama.com.
-After installation, pull the required models:
+Python 3.8+: Download and install Python if you haven't already.
+Ollama Installation:
+Visit ollama.com to download and install Ollama for your operating system.
+Once installed, open your terminal and pull the necessary models:
 Bash
 
 ollama pull nomic-embed-text
 ollama pull gemma3:latest
-Supabase Project:
-Create a new Supabase project.
+Supabase Project Setup:
+Navigate to Supabase and create a new project.
 
-Enable the pg_vector extension in your Supabase project (Database -> Extensions -> search for vector and enable it).
+Crucially, enable the pg_vector extension in your Supabase project (find it under Database -> Extensions).
 
-Create a documents table with the following schema:
+Create a documents table with the following SQL schema. This table will house your document chunks and their embeddings:
 
 SQL
 
 CREATE TABLE documents (
     id SERIAL PRIMARY KEY,
     content TEXT,
-    embedding VECTOR(768), -- Adjust dimension based on your embedding model (nomic-embed-text is 768)
+    embedding VECTOR(768), -- 'nomic-embed-text' produces 768-dimensional embeddings.
     source TEXT
 );
 Installation Steps
-Clone the repository:
+Clone the Repository:
+Begin by cloning this project to your local machine:
 
 Bash
 
-git clone <your-repository-url>
-cd <your-repository-name>
-Create a virtual environment (recommended):
+git clone https://github.com/your-username/your-repo-name.git # Replace with your actual repo URL
+cd your-repo-name
+ Create a Virtual Environment:
+It's highly recommended to use a virtual environment to manage dependencies:
 
 Bash
 
 python -m venv venv
 source venv/bin/activate # On Windows: `venv\Scripts\activate`
-Install dependencies:
+Install Dependencies:
+Install all required Python packages from the requirements.txt file:
 
-Code snippet
+Bash
 
 pip install -r requirements.txt
-Configure environment variables:
-
-Create a .env file in the root directory of your project and add your Supabase credentials:
+Configure Environment Variables:
+Create a file named .env in the root directory of your project. Populate it with your Supabase credentials:
 
 SUPABASE_URL="YOUR_SUPABASE_URL"
 SUPABASE_KEY="YOUR_SUPABASE_ANON_KEY"
-You can find these in your Supabase project settings (Settings -> API).
+You can find your Supabase URL and Anon Key in your Supabase project settings under Project Settings -> API.
 
-Usage
-1. Embed and Upload Documents
-To make your documents searchable by the chatbot, you need to embed their content and upload them to Supabase. The embed_and_upload.py script handles this. 
+👩‍💻 How to Use
+1. Embed and Upload Your Documents
+Prepare your documents for the chatbot by embedding their content and uploading them to your Supabase database.
 
-Place your .pdf, .docx, or .txt files in a designated folder (e.g., reference_docs/ as seen in the example).
+Place your .pdf, .docx, or .txt files into a designated reference_docs/ folder (or adjust paths in the script).
 
-Run the script:
-
-Bash
-
-python embed_and_upload.py
-This script will process sigmabatch.pdf and reference_docs/sample.txt by default. You can modify the if __name__ == "__main__": block in embed_and_upload.py to include other files you wish to embed.
-
-2. Start the Chatbot
-After embedding your documents, you can start the RAG chatbot:
+Run the embed_and_upload.py script. This script is configured to process sigmabatch.pdf and sample.txt by default. You can easily modify the if __name__ == "__main__": block within embed_and_upload.py to include other documents you wish to integrate.
 
 Bash
 
 python embed_and_upload.py
-(Note: The main.py seems to be an older, simplified version of the chatbot. embed_and_upload.py contains the full RAG pipeline and CLI.) 
+You will see progress messages as chunks are uploaded to Supabase.
 
+2. Engage with Your Chatbot
+Once your documents are embedded, you can start interacting with your RAG chatbot:
 
-The chatbot will prompt you to enter questions. Type your query and press Enter. To exit, type exit.
+Bash
+
+python embed_and_upload.py
+The chatbot will launch in your terminal, prompting you to enter questions. Type your query and press Enter. To gracefully exit the conversation, simply type exit.
 
 RAG Chatbot (type 'exit' to quit)
 You: What is the duration of the Sigma Batch course?
 Bot: The duration of the Sigma Batch course is 4.5 Months. [cite: 7]
 You: Tell me about the MERN Stack development.
-Bot: The MERN Stack development covers Complete Frontend Development, Complete Backend Development, Complete Database (SQL & MongoDB), and Complete MERN Stack (MongoDB, Express, React, Node). It also includes Real Life and Industry Grade Projects, LIVE sessions on how to get a job, resume, open source & more. [cite: 5]
+Bot: The MERN Stack development covers Complete Frontend Development, Complete Backend Development, Complete Database (SQL & MongoDB), and Complete MERN Stack (MongoDB, Express, React, Node). It also includes Real Life and Industry Grade Projects, LIVE sessions on how to get a job, resume, open source & more. [cite: 6]
 You: exit
-Project Structure
+📂 Project Structure
 .
-├── embed_and_upload.py       # Main script for embedding documents and running the RAG chatbot [cite: 1]
-├── main.py                   # (Legacy) A simpler script for basic chatbot interaction [cite: 2]
-├── requirements.txt          # Python dependencies [cite: 3]
-├── .env                      # Environment variables (Supabase URL, Key)
-├── sample.txt                # Example text document for RAG [cite: 4]
-└── sigmabatch.pdf            # Example PDF document (course details) for RAG [cite: 6]
-Contributing
-Feel free to fork this repository, open issues, or submit pull requests.
+├── embed_and_upload.py       # The heart of the project: handles document embedding, Supabase upload, and the RAG chat pipeline.
+├── main.py                   # (Legacy/Example) A simpler, initial script for basic LLM interaction. The RAG pipeline is in embed_and_upload.py.
+├── requirements.txt          # Lists all Python libraries required for the project.
+├── .env                      # Stores sensitive environment variables (e.g., Supabase credentials).
+├── sample.txt                # A sample text document for demonstration and testing the RAG pipeline. [cite: 2]
+└── sigmabatch.pdf            # A sample PDF document (e.g., course details) used to showcase PDF text extraction and RAG capabilities. [cite: 3]
+🤝 Contributing
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
-License
-[Choose and add a license, e.g., MIT, Apache 2.0, etc.]
+If you have suggestions for improving this project, please fork the repo and create a pull request. You can also open an issue with the tag "enhancement."
 
-
-
-
-
-
-
+Fork the Project
+Create your Feature Branch (git checkout -b feature/AmazingFeature)
+Commit your Changes (git commit -m 'Add some AmazingFeature')
+Push to the Branch (git push origin feature/AmazingFeature)
+Open a Pull Request
+⚖️ License
+Distributed under the [Your Chosen License] License. See the LICENSE file for more information.
